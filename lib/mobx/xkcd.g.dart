@@ -24,6 +24,21 @@ mixin _$XkcdService on Xkcd, Store {
     });
   }
 
+  final _$comicsListAtom = Atom(name: 'Xkcd.comicsList');
+
+  @override
+  List<ComicModel> get comicsList {
+    _$comicsListAtom.reportRead();
+    return super.comicsList;
+  }
+
+  @override
+  set comicsList(List<ComicModel> value) {
+    _$comicsListAtom.reportWrite(value, super.comicsList, () {
+      super.comicsList = value;
+    });
+  }
+
   final _$comicAtom = Atom(name: 'Xkcd.comic');
 
   @override
@@ -46,10 +61,18 @@ mixin _$XkcdService on Xkcd, Store {
     return _$getTodayComicAsyncAction.run(() => super.getTodayComic());
   }
 
+  final _$getRandomComicAsyncAction = AsyncAction('Xkcd.getRandomComic');
+
+  @override
+  Future<dynamic> getRandomComic() {
+    return _$getRandomComicAsyncAction.run(() => super.getRandomComic());
+  }
+
   @override
   String toString() {
     return '''
 isMainComicLoading: ${isMainComicLoading},
+comicsList: ${comicsList},
 comic: ${comic}
     ''';
   }
