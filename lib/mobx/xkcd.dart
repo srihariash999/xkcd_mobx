@@ -1,6 +1,12 @@
+import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:image_downloader/image_downloader.dart';
 import 'package:mobx/mobx.dart';
 
 part 'xkcd.g.dart';
@@ -97,6 +103,48 @@ abstract class Xkcd with Store {
             "${res.data['year']}-${res.data['month'].length > 1 ? res.data['month'] : '0' + res.data['month'].toString()}-${res.data['day'].length > 1 ? res.data['day'] : '0' + res.data['day'].toString()}",
         comicAlt: res.data['alt']);
     isMainComicLoading = false;
+    return;
+  }
+
+  @action
+  Future downloadImage() async {
+    try {
+      // Saved with this method.
+      var imageId = await ImageDownloader.downloadImage("${comic.getComicUrl}");
+      if (imageId == null) {
+        return;
+      }
+
+      // Below is a method of obtaining saved image information.
+      // var fileName =
+      //     await ImageDownloader.findName(imageId);
+      // var path =
+      //     await ImageDownloader.findPath(imageId);
+      // var size =
+      //     await ImageDownloader.findByteSize(imageId);
+      // var mimeType =
+      //     await ImageDownloader.findMimeType(imageId);
+    } on PlatformException catch (error) {
+      print(error);
+    }
+    return;
+  }
+
+  @action
+  Future shareImage() async {
+    try {
+      var request =
+          await HttpClient().getUrl(Uri.parse('${comic.getComicUrl}'));
+      var response = await request.close();
+      Uint8List bytes = await consolidateHttpClientResponseBytes(response);
+      await Share.file('${comic.getComicTitle}', '${comic.getComicNumber}.png',
+          bytes, 'image/jpg',
+          text:
+              '${comic.getComicAlt}                            -->  Shared from xkcd Viewer app by Srihari A 😁');
+    } catch (e) {
+      print('error: $e');
+    }
+
     return;
   }
 }

@@ -49,23 +49,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: MediaQuery.of(context).size.height * 0.05,
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Container(
-                        padding: EdgeInsets.only(left: 10.0),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.arrow_upward,
-                            color: Colors.white,
-                            size: 30.0,
-                          ),
-                          onPressed: () async {
-                            // print(" button Pressed");
-                            await store.getNumberedComic(
-                                store.comic.getComicNumber, "up");
-                          },
-                        ),
-                      ),
                       Container(
                         child: Padding(
                           padding: const EdgeInsets.only(right: 8.0),
@@ -132,10 +117,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         Container(
                           height: MediaQuery.of(context).size.height * 0.40,
-                          child: InteractiveViewer(
-                            child: Image.network(
-                              "${store.comic.getComicUrl}",
-                              fit: BoxFit.contain,
+                          child: Card(
+                            child: InteractiveViewer(
+                              child: Image.network(
+                                "${store.comic.getComicUrl}",
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
                         ),
@@ -157,21 +144,71 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                        Container(
-                          padding: EdgeInsets.only(left: 20.0, bottom: 4.0),
-                          alignment: Alignment.topLeft,
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.arrow_downward,
-                              color: Colors.white,
-                              size: 30.0,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(left: 20.0, bottom: 4.0),
+                              alignment: Alignment.topLeft,
+                              child: RaisedButton(
+                                shape: CircleBorder(),
+                                color: Colors.white,
+                                child: Icon(
+                                  Icons.arrow_left,
+                                  color: Colors.black,
+                                  size: 40.0,
+                                ),
+                                onPressed: () async {
+                                  // print(" button Pressed");
+                                  await store.getNumberedComic(
+                                      store.comic.getComicNumber - 1, "down");
+                                },
+                              ),
                             ),
-                            onPressed: () async {
-                              // print(" button Pressed");
-                              await store.getNumberedComic(
-                                  store.comic.getComicNumber - 1, "down");
-                            },
-                          ),
+                            Container(
+                              alignment: Alignment.center,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.share_rounded,
+                                  color: Colors.white,
+                                  size: 36.0,
+                                ),
+                                onPressed: () async {
+                                  await store.shareImage();
+                                },
+                              ),
+                            ),
+                            Container(
+                              alignment: Alignment.center,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.download_rounded,
+                                  color: Colors.white,
+                                  size: 40.0,
+                                ),
+                                onPressed: () async {
+                                  await store.downloadImage();
+                                },
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(left: 10.0),
+                              child: RaisedButton(
+                                color: Colors.white,
+                                shape: CircleBorder(),
+                                child: Icon(
+                                  Icons.arrow_right,
+                                  color: Colors.black,
+                                  size: 40.0,
+                                ),
+                                onPressed: () async {
+                                  // print(" button Pressed");
+                                  await store.getNumberedComic(
+                                      store.comic.getComicNumber, "up");
+                                },
+                              ),
+                            ),
+                          ],
                         )
                       ],
                     ),

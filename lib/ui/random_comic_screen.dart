@@ -99,23 +99,52 @@ class _RandomComicScreenState extends State<RandomComicScreen> {
                         )
                       ],
                     ),
-                    Text(
-                      "#${store.comic.getComicNumber}",
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
-                    Text(
-                      "${formatter.format(DateTime.parse(store.comic.getComicDate))}",
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w200,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.30,
+                          child: Text(""),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.30,
+                          child: Column(
+                            children: [
+                              Text(
+                                "#${store.comic.getComicNumber}",
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                              Text(
+                                "${formatter.format(DateTime.parse(store.comic.getComicDate))}",
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w200,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.centerRight,
+                          width: MediaQuery.of(context).size.width * 0.30,
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.download_rounded,
+                              color: Colors.white,
+                            ),
+                            onPressed: () async {
+                              store.downloadImage();
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                     Container(
                       // color: Colors.white,
@@ -124,16 +153,15 @@ class _RandomComicScreenState extends State<RandomComicScreen> {
                         children: [
                           Expanded(
                             child: Center(
-                              child: Text(
-                                "${store.comic.getComicTitle}",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 28.0,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w300,
-                                ),
+                                child: Text(
+                              "${store.comic.getComicTitle}",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 28.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w300,
                               ),
-                            ),
+                            )),
                           ),
                         ],
                       ),
