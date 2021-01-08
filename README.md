@@ -16,9 +16,8 @@ Mobx is used as a state management strategy for this app.
 - [x] Fetch random comics 
 - [x] Move b/w prev and next comics
 - [x] Zoom view for the comics
-- [x] Do not load already fetched previous comics.
 - [ ] Open fullscreen view of comics on tap.
-- [ ] Favourite comics to view later in one place.
+- [x] Favourite comics to view later in one place.
 - [X] Save/Download Images.
 - [X] Share comics/images to other apps
 - [ ] Offline view of saved comics.

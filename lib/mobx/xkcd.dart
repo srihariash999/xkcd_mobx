@@ -2,12 +2,17 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_downloader/image_downloader.dart';
 import 'package:mobx/mobx.dart';
+import 'package:xkcd_mobx/database/fav_comics.dart';
+import 'package:xkcd_mobx/database/fav_comics_dao.dart';
+import 'package:xkcd_mobx/mobx/comic_model.dart';
 
 part 'xkcd.g.dart';
 
@@ -15,15 +20,22 @@ class XkcdService = Xkcd with _$XkcdService;
 
 abstract class Xkcd with Store {
   int latestNumber;
+  FavComicDao _favComicDao = FavComicDao();
 
   @observable
   bool isMainComicLoading = false;
+
+  @observable
+  bool isComicFavorite = false;
 
   @observable
   List<ComicModel> comicsList = [];
 
   @observable
   ComicModel comic;
+
+  @observable
+  List<FavComic> favoriteComics = [];
 
   @action
   Future getTodayComic() async {
@@ -42,6 +54,14 @@ abstract class Xkcd with Store {
         comicAlt: res.data['alt']);
     comicsList.add(comic);
     latestNumber = comic.getComicNumber;
+    List<FavComic> fetchedFavComics = await _favComicDao.getAllSortedByName();
+    isComicFavorite = false;
+    for (var i in fetchedFavComics) {
+      if (i.comicNumber == comic.getComicNumber) {
+        isComicFavorite = true;
+        break;
+      }
+    }
     isMainComicLoading = false;
     return;
   }
@@ -79,6 +99,14 @@ abstract class Xkcd with Store {
         comic = comicsList[latestNumber - number - 1];
       }
     }
+    List<FavComic> fetchedFavComics = await _favComicDao.getAllSortedByName();
+    isComicFavorite = false;
+    for (var i in fetchedFavComics) {
+      if (i.comicNumber == comic.getComicNumber) {
+        isComicFavorite = true;
+        break;
+      }
+    }
     isMainComicLoading = false;
     return;
   }
@@ -102,6 +130,14 @@ abstract class Xkcd with Store {
         comicDate:
             "${res.data['year']}-${res.data['month'].length > 1 ? res.data['month'] : '0' + res.data['month'].toString()}-${res.data['day'].length > 1 ? res.data['day'] : '0' + res.data['day'].toString()}",
         comicAlt: res.data['alt']);
+    List<FavComic> fetchedFavComics = await _favComicDao.getAllSortedByName();
+    isComicFavorite = false;
+    for (var i in fetchedFavComics) {
+      if (i.comicNumber == comic.getComicNumber) {
+        isComicFavorite = true;
+        break;
+      }
+    }
     isMainComicLoading = false;
     return;
   }
@@ -147,25 +183,54 @@ abstract class Xkcd with Store {
 
     return;
   }
-}
 
-class ComicModel {
-  final String comicUrl;
-  final String comicTitle;
-  final int comicNumber;
-  final String comicDate;
-  final String comicAlt;
+  @action
+  addFavComic() async {
+    List<FavComic> fetchedFavComics = await _favComicDao.getAllSortedByName();
+    bool _isExisting = false;
+    for (var i in fetchedFavComics) {
+      if (i.comicNumber == comic.getComicNumber) {
+        _isExisting = true;
+        break;
+      }
+    }
+    if (_isExisting) {
+      BotToast.showText(
+        text: "Comic already added to favorites",
+        textStyle: TextStyle(
+          fontSize: 18.0,
+          color: Colors.black,
+        ),
+        contentColor: Colors.white,
+      );
+    } else {
+      await _favComicDao.insert(
+        FavComic(
+          comicUrl: comic.getComicUrl,
+          comicTitle: comic.getComicTitle,
+          comicNumber: comic.getComicNumber,
+          comicDate: comic.getComicDate,
+          comicAlt: comic.getComicAlt,
+        ),
+      );
+      isComicFavorite = true;
+      BotToast.showText(
+        text: "Added comic to favorites",
+        textStyle: TextStyle(
+          fontSize: 18.0,
+          color: Colors.black,
+        ),
+        contentColor: Colors.white,
+      );
+    }
+  }
 
-  ComicModel(
-      {this.comicUrl,
-      this.comicTitle,
-      this.comicNumber,
-      this.comicDate,
-      this.comicAlt});
-
-  String get getComicUrl => comicUrl;
-  String get getComicTitle => comicTitle;
-  String get getComicDate => comicDate;
-  String get getComicAlt => comicAlt;
-  int get getComicNumber => comicNumber;
+  @action
+  Future getFavoriteComics() async {
+    isMainComicLoading = true;
+    List<FavComic> fetchedFavComics = await _favComicDao.getAllSortedByName();
+    isMainComicLoading = false;
+    favoriteComics = fetchedFavComics;
+    print(" fetched comics: $favoriteComics");
+  }
 }

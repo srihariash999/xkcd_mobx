@@ -36,6 +36,9 @@ dependencies:
   image_downloader: ^0.20.1
   bot_toast: ^3.0.5 
   esys_flutter_share: ^1.0.2
+  sembast: ^2.4.8+1
+  path_provider: ^1.6.27
+  cached_network_image: ^2.5.0
 
 dev_dependencies:
   flutter_test:

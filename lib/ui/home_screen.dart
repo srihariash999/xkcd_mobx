@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
@@ -119,9 +120,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: MediaQuery.of(context).size.height * 0.40,
                           child: Card(
                             child: InteractiveViewer(
-                              child: Image.network(
-                                "${store.comic.getComicUrl}",
+                              maxScale: 2.5,
+                              child: CachedNetworkImage(
+                                imageUrl: "${store.comic.getComicUrl}",
                                 fit: BoxFit.contain,
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
                               ),
                             ),
                           ),
@@ -175,6 +179,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 onPressed: () async {
                                   await store.shareImage();
+                                },
+                              ),
+                            ),
+                            Container(
+                              alignment: Alignment.center,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.favorite,
+                                  color: store.isComicFavorite
+                                      ? Colors.red
+                                      : Colors.white,
+                                  size: 36.0,
+                                ),
+                                onPressed: () async {
+                                  await store.addFavComic();
                                 },
                               ),
                             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:xkcd_mobx/ui/custom_dialog.dart';
+import 'package:xkcd_mobx/ui/fav_comics.dart';
 import 'package:xkcd_mobx/ui/random_comic_screen.dart';
 
 TextStyle navDrawerTextStyle = GoogleFonts.fredokaOne(
@@ -39,6 +40,21 @@ class DrawerWidget extends StatelessWidget {
               //   padding: const EdgeInsets.only(left: 16.0, bottom: 30.0),
               //   child: Text("App Settings", style: navDrawerTextStyle),
               // ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, bottom: 30.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FavoriteComicsScreen(),
+                      ),
+                    );
+                  },
+                  child: Text("Favorite Comics", style: navDrawerTextStyle),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.only(left: 16.0, bottom: 30.0),
                 child: GestureDetector(
