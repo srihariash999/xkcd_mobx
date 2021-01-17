@@ -105,17 +105,31 @@ class _RandomComicScreenState extends State<RandomComicScreen> {
                       children: [
                         Container(
                           width: MediaQuery.of(context).size.width * 0.30,
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.favorite,
-                              color: store.isComicFavorite
-                                  ? Colors.red
-                                  : Colors.white,
-                              size: 25.0,
-                            ),
-                            onPressed: () {
-                              store.addFavComic();
-                            },
+                          child: Row(
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.favorite,
+                                  color: store.isComicFavorite
+                                      ? Colors.red
+                                      : Colors.white,
+                                  size: 25.0,
+                                ),
+                                onPressed: () {
+                                  store.addFavComic();
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.share_rounded,
+                                  color: Colors.white,
+                                  size: 25.0,
+                                ),
+                                onPressed: () async {
+                                  await store.shareImage();
+                                },
+                              ),
+                            ],
                           ),
                         ),
                         Container(
@@ -161,7 +175,7 @@ class _RandomComicScreenState extends State<RandomComicScreen> {
                     ),
                     Container(
                       // color: Colors.white,
-                      height: MediaQuery.of(context).size.height * 0.12,
+                      height: MediaQuery.of(context).size.height * 0.09,
                       child: Row(
                         children: [
                           Expanded(
@@ -183,7 +197,7 @@ class _RandomComicScreenState extends State<RandomComicScreen> {
                       height: MediaQuery.of(context).size.height * 0.03,
                     ),
                     Container(
-                      height: MediaQuery.of(context).size.height * 0.42,
+                      height: MediaQuery.of(context).size.height * 0.40,
                       child: Card(
                         child: InteractiveViewer(
                           maxScale: 2.5,

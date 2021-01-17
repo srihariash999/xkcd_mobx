@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -55,19 +56,47 @@ class _DetailedViewState extends State<DetailedView> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
-                    width: MediaQuery.of(context).size.width * 0.30,
-                    child: Text("")
-                    // IconButton(
-                    //   icon: Icon(
-                    //     Icons.favorite,
-                    //     color: Colors.white,
-                    //     size: 25.0,
-                    //   ),
-                    //   onPressed: () {
-                    //     store.addFavComic();
-                    //   },
-                    // ),
-                    ),
+                  width: MediaQuery.of(context).size.width * 0.30,
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                          size: 25.0,
+                        ),
+                        onPressed: () async {
+                          bool _didDelete =
+                              await store.favRemoveAction(widget.comic);
+                          if (_didDelete) {
+                            // Return true if comic is deleted successfully, to tell UI to refresh
+                            Navigator.pop(context, true);
+                          } else {
+                            BotToast.showText(
+                              text: "Cannot remove from favorites",
+                              textStyle: TextStyle(
+                                fontSize: 18.0,
+                                color: Colors.black,
+                              ),
+                              contentColor: Colors.white,
+                            );
+                          }
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.share_rounded,
+                          color:
+                              store.isComicFavorite ? Colors.red : Colors.white,
+                          size: 25.0,
+                        ),
+                        onPressed: () async {
+                          await store.favShareAction(widget.comic);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
                 Container(
                   width: MediaQuery.of(context).size.width * 0.30,
                   child: Column(
@@ -103,7 +132,7 @@ class _DetailedViewState extends State<DetailedView> {
                       size: 25.0,
                     ),
                     onPressed: () async {
-                      store.downloadImage();
+                      await store.favDownlaoadAction(widget.comic);
                     },
                   ),
                 ),
@@ -111,7 +140,7 @@ class _DetailedViewState extends State<DetailedView> {
             ),
             Container(
               // color: Colors.white,
-              height: MediaQuery.of(context).size.height * 0.12,
+              height: MediaQuery.of(context).size.height * 0.10,
               child: Row(
                 children: [
                   Expanded(

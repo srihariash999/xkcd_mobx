@@ -87,8 +87,8 @@ mixin _$XkcdService on Xkcd, Store {
   final _$getTodayComicAsyncAction = AsyncAction('Xkcd.getTodayComic');
 
   @override
-  Future<dynamic> getTodayComic() {
-    return _$getTodayComicAsyncAction.run(() => super.getTodayComic());
+  Future<dynamic> getTodayComic(Function fun) {
+    return _$getTodayComicAsyncAction.run(() => super.getTodayComic(fun));
   }
 
   final _$getNumberedComicAsyncAction = AsyncAction('Xkcd.getNumberedComic');
@@ -132,6 +132,13 @@ mixin _$XkcdService on Xkcd, Store {
   @override
   Future<dynamic> getFavoriteComics() {
     return _$getFavoriteComicsAsyncAction.run(() => super.getFavoriteComics());
+  }
+
+  final _$favRemoveActionAsyncAction = AsyncAction('Xkcd.favRemoveAction');
+
+  @override
+  Future<dynamic> favRemoveAction(FavComic fc) {
+    return _$favRemoveActionAsyncAction.run(() => super.favRemoveAction(fc));
   }
 
   @override

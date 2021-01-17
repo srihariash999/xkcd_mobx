@@ -16,31 +16,44 @@ import 'package:xkcd_mobx/mobx/comic_model.dart';
 
 part 'xkcd.g.dart';
 
+//  TO generate part file : "flutter packages pub run build_runner build"
+
 class XkcdService = Xkcd with _$XkcdService;
 
 abstract class Xkcd with Store {
+  // Storing latest number to use as limit for random comics gen
   int latestNumber;
+
+  Function homeScreenRefresh;
+
+  // FavComicDao instance for DB actions
   FavComicDao _favComicDao = FavComicDao();
 
+  // observable bool to indicate loading of comic.
   @observable
   bool isMainComicLoading = false;
 
+  // observable bool to indicate if comic is favorite.
   @observable
   bool isComicFavorite = false;
 
+  // observable comicsList for serial-ly loaded comics in home screen
   @observable
   List<ComicModel> comicsList = [];
 
+  // observable indicating current comic in home and radom comics screen
   @observable
   ComicModel comic;
 
+  // Observable list of comics for indicating fav comics from db.
   @observable
   List<FavComic> favoriteComics = [];
 
+  // mobx action to get latest comic.
   @action
-  Future getTodayComic() async {
+  Future getTodayComic(Function fun) async {
     isMainComicLoading = true;
-
+    homeScreenRefresh = fun;
     Dio dio = Dio();
 
     Response res = await dio.get("http://xkcd.com/info.0.json");
@@ -66,6 +79,7 @@ abstract class Xkcd with Store {
     return;
   }
 
+  // mobx action to get a comic of specific number
   @action
   Future getNumberedComic(int number, String action) async {
     isMainComicLoading = true;
@@ -111,6 +125,7 @@ abstract class Xkcd with Store {
     return;
   }
 
+  // mobx action to get a random comic.
   @action
   Future getRandomComic() async {
     isMainComicLoading = true;
@@ -142,6 +157,7 @@ abstract class Xkcd with Store {
     return;
   }
 
+  // mobx action to download a comic image.
   @action
   Future downloadImage() async {
     try {
@@ -166,6 +182,7 @@ abstract class Xkcd with Store {
     return;
   }
 
+  // mobx action to share a comic image with alt text as message text.
   @action
   Future shareImage() async {
     try {
@@ -184,6 +201,7 @@ abstract class Xkcd with Store {
     return;
   }
 
+  // mobx action to add a comic to favorite comics in local db.
   @action
   addFavComic() async {
     List<FavComic> fetchedFavComics = await _favComicDao.getAllSortedByName();
@@ -191,18 +209,33 @@ abstract class Xkcd with Store {
     for (var i in fetchedFavComics) {
       if (i.comicNumber == comic.getComicNumber) {
         _isExisting = true;
+        comic.setComicId(i.id);
         break;
       }
     }
     if (_isExisting) {
-      BotToast.showText(
-        text: "Comic already added to favorites",
-        textStyle: TextStyle(
-          fontSize: 18.0,
-          color: Colors.black,
-        ),
-        contentColor: Colors.white,
-      );
+      bool del = await _favComicDao.delete(comic.getComicId);
+
+      if (del) {
+        isComicFavorite = false;
+        BotToast.showText(
+          text: "Removed comic from favorites",
+          textStyle: TextStyle(
+            fontSize: 18.0,
+            color: Colors.black,
+          ),
+          contentColor: Colors.white,
+        );
+      } else {
+        BotToast.showText(
+          text: "Error removing from favorites.",
+          textStyle: TextStyle(
+            fontSize: 18.0,
+            color: Colors.black,
+          ),
+          contentColor: Colors.white,
+        );
+      }
     } else {
       await _favComicDao.insert(
         FavComic(
@@ -225,6 +258,7 @@ abstract class Xkcd with Store {
     }
   }
 
+  // mobx action to get a list of favorite comics from local db.
   @action
   Future getFavoriteComics() async {
     isMainComicLoading = true;
@@ -232,5 +266,76 @@ abstract class Xkcd with Store {
     isMainComicLoading = false;
     favoriteComics = fetchedFavComics;
     print(" fetched comics: $favoriteComics");
+  }
+
+  // mobx action to remove a comic from local db. (only for detailed view use)
+  @action
+  Future favRemoveAction(FavComic fc) async {
+    bool isDel = await _favComicDao.delete(fc.id);
+    if (isDel) {
+      isComicFavorite = false;
+      BotToast.showText(
+        text: "Removed comic from favorites",
+        textStyle: TextStyle(
+          fontSize: 18.0,
+          color: Colors.black,
+        ),
+        contentColor: Colors.white,
+      );
+
+      return isDel;
+    } else {
+      BotToast.showText(
+        text: "Error removing from favorites.",
+        textStyle: TextStyle(
+          fontSize: 18.0,
+          color: Colors.black,
+        ),
+        contentColor: Colors.white,
+      );
+    }
+  }
+
+  // mobx action to share a comic . (only for detailed view use)
+  @action
+  Future favShareAction(FavComic fc) async {
+    try {
+      var request = await HttpClient().getUrl(Uri.parse('${fc.comicUrl}'));
+      var response = await request.close();
+      Uint8List bytes = await consolidateHttpClientResponseBytes(response);
+      await Share.file(
+          '${fc.comicTitle}', '${fc.comicNumber}.png', bytes, 'image/jpg',
+          text:
+              '${fc.comicAlt}                            -->  Shared from xkcd Viewer app by Srihari A 😁');
+    } catch (e) {
+      print('error: $e');
+    }
+
+    return;
+  }
+
+  // mobx action to download a comic . (only for detailed view use)
+  @action
+  Future favDownlaoadAction(FavComic fc) async {
+    try {
+      // Saved with this method.
+      var imageId = await ImageDownloader.downloadImage("${fc.comicUrl}");
+      if (imageId == null) {
+        return;
+      }
+
+      // Below is a method of obtaining saved image information.
+      // var fileName =
+      //     await ImageDownloader.findName(imageId);
+      // var path =
+      //     await ImageDownloader.findPath(imageId);
+      // var size =
+      //     await ImageDownloader.findByteSize(imageId);
+      // var mimeType =
+      //     await ImageDownloader.findMimeType(imageId);
+    } on PlatformException catch (error) {
+      print(error);
+    }
+    return;
   }
 }

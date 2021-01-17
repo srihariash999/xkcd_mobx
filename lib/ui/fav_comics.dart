@@ -85,8 +85,8 @@ class _FavoriteComicsScreenState extends State<FavoriteComicsScreen> {
                               return Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: InkWell(
-                                  onTap: () {
-                                    Navigator.push(
+                                  onTap: () async {
+                                    var n = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => DetailedView(
@@ -94,6 +94,9 @@ class _FavoriteComicsScreenState extends State<FavoriteComicsScreen> {
                                         ),
                                       ),
                                     );
+                                    if (n != null && n == true) {
+                                      await store.getFavoriteComics();
+                                    }
                                   },
                                   child: Container(
                                     height: 120.0,

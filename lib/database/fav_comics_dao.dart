@@ -27,12 +27,14 @@ class FavComicDao {
     );
   }
 
-  Future delete(FavComic favComic) async {
-    final finder = Finder(filter: Filter.byKey(favComic.id));
-    await _favcomicStore.delete(
+  Future<bool> delete(int favComicId) async {
+    final finder = Finder(filter: Filter.byKey(favComicId));
+    var c = await _favcomicStore.delete(
       await _db,
       finder: finder,
     );
+    print(" delete resp : $c");
+    return c == 0 ? false : true;
   }
 
   Future<List<FavComic>> getAllSortedByName() async {
