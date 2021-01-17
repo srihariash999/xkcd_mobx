@@ -23,7 +23,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   getMainComic() async {
-    await store.getTodayComic();
+    await store.getTodayComic(refresh);
+  }
+
+  refresh() async {
+    initState();
   }
 
   @override
@@ -74,13 +78,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.black87,
                     child: Column(
                       children: [
-                        Text(
-                          "#${store.comic.getComicNumber}",
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w300,
+                        GestureDetector(
+                          onTap: () async {
+                            await refresh();
+                          },
+                          child: Text(
+                            "#${store.comic.getComicNumber}",
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w300,
+                            ),
                           ),
                         ),
                         Text(
@@ -117,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: MediaQuery.of(context).size.height * 0.03,
                         ),
                         Container(
-                          height: MediaQuery.of(context).size.height * 0.40,
+                          height: MediaQuery.of(context).size.height * 0.38,
                           child: Card(
                             child: InteractiveViewer(
                               maxScale: 2.5,
@@ -148,13 +157,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(left: 20.0, bottom: 4.0),
-                              alignment: Alignment.topLeft,
-                              child: RaisedButton(
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.08,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              RaisedButton(
                                 shape: CircleBorder(),
                                 color: Colors.white,
                                 child: Icon(
@@ -168,66 +176,66 @@ class _HomeScreenState extends State<HomeScreen> {
                                       store.comic.getComicNumber - 1, "down");
                                 },
                               ),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.share_rounded,
+                              Container(
+                                alignment: Alignment.center,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.share_rounded,
+                                    color: Colors.white,
+                                    size: 36.0,
+                                  ),
+                                  onPressed: () async {
+                                    await store.shareImage();
+                                  },
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.favorite,
+                                    color: store.isComicFavorite
+                                        ? Colors.red
+                                        : Colors.white,
+                                    size: 36.0,
+                                  ),
+                                  onPressed: () async {
+                                    await store.addFavComic();
+                                  },
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.download_rounded,
+                                    color: Colors.white,
+                                    size: 40.0,
+                                  ),
+                                  onPressed: () async {
+                                    await store.downloadImage();
+                                  },
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: RaisedButton(
                                   color: Colors.white,
-                                  size: 36.0,
+                                  shape: CircleBorder(),
+                                  child: Icon(
+                                    Icons.arrow_right,
+                                    color: Colors.black,
+                                    size: 40.0,
+                                  ),
+                                  onPressed: () async {
+                                    // print(" button Pressed");
+                                    await store.getNumberedComic(
+                                        store.comic.getComicNumber, "up");
+                                  },
                                 ),
-                                onPressed: () async {
-                                  await store.shareImage();
-                                },
                               ),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.favorite,
-                                  color: store.isComicFavorite
-                                      ? Colors.red
-                                      : Colors.white,
-                                  size: 36.0,
-                                ),
-                                onPressed: () async {
-                                  await store.addFavComic();
-                                },
-                              ),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.download_rounded,
-                                  color: Colors.white,
-                                  size: 40.0,
-                                ),
-                                onPressed: () async {
-                                  await store.downloadImage();
-                                },
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(left: 10.0),
-                              child: RaisedButton(
-                                color: Colors.white,
-                                shape: CircleBorder(),
-                                child: Icon(
-                                  Icons.arrow_right,
-                                  color: Colors.black,
-                                  size: 40.0,
-                                ),
-                                onPressed: () async {
-                                  // print(" button Pressed");
-                                  await store.getNumberedComic(
-                                      store.comic.getComicNumber, "up");
-                                },
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         )
                       ],
                     ),
