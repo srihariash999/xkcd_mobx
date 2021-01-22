@@ -193,7 +193,7 @@ abstract class Xkcd with Store {
       await Share.file('${comic.getComicTitle}', '${comic.getComicNumber}.png',
           bytes, 'image/jpg',
           text:
-              '${comic.getComicAlt}                            -->  Shared from xkcd Viewer app by Srihari A 😁');
+              '${comic.comicAlt}                                \n\n       Shared from xkcd Viewer app by Srihari A https://play.google.com/store/apps/details?id=com.zepplaud.xkcd_viewer');
     } catch (e) {
       print('error: $e');
     }
@@ -306,7 +306,7 @@ abstract class Xkcd with Store {
       await Share.file(
           '${fc.comicTitle}', '${fc.comicNumber}.png', bytes, 'image/jpg',
           text:
-              '${fc.comicAlt}                            -->  Shared from xkcd Viewer app by Srihari A 😁');
+              '${fc.comicAlt}                            ( Shared from xkcd Viewer app by Srihari A https://play.google.com/store/apps/details?id=com.zepplaud.xkcd_viewer)');
     } catch (e) {
       print('error: $e');
     }
