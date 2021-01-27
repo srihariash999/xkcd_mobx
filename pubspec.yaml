@@ -32,6 +32,7 @@ dependencies:
   intl: ^0.16.1
   lottie: ^0.7.0+1
   font_awesome_flutter: ^8.11.0
+  flutter_feather_icons: ^1.0.3
   url_launcher: ^5.7.10
   image_downloader: ^0.20.1
   bot_toast: ^3.0.5 
