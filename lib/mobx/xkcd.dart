@@ -258,6 +258,16 @@ abstract class Xkcd with Store {
     }
   }
 
+  // mobx action to get if the comic is the latest one.
+  @action
+  bool getIfLastOne() {
+    if (latestNumber == comic.getComicNumber) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   // mobx action to get a list of favorite comics from local db.
   @action
   Future getFavoriteComics() async {
