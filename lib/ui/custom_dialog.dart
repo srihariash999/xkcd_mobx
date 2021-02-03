@@ -17,7 +17,6 @@ class CustomDialogBox extends StatefulWidget {
 }
 
 class _CustomDialogBoxState extends State<CustomDialogBox> {
-
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -98,8 +97,79 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                             );
                     },
                   ),
+                  IconButton(
+                    icon: FaIcon(
+                      FontAwesomeIcons.github,
+                      color: Colors.black,
+                    ),
+                    onPressed: () async {
+                      var url = "https://github.com/srihariash999/xkcd_mobx";
+                      await canLaunch(url)
+                          ? launch(url)
+                          : SnackBar(
+                              content: Text("Cannot open the link"),
+                            );
+                    },
+                  ),
                 ],
               ),
+              SizedBox(height: 8.0),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'With contributions from :',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+              Container(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          'Tushar ',
+                          style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.w300),
+                        ),
+                        IconButton(
+                          icon: FaIcon(
+                            FontAwesomeIcons.twitter,
+                            color: Colors.blue[400],
+                          ),
+                          onPressed: () async {
+                            var url = "https://twitter.com/tusharc2n";
+                            await canLaunch(url)
+                                ? launch(url)
+                                : SnackBar(
+                                    content: Text("Cannot open the link"),
+                                  );
+                          },
+                        ),
+                        IconButton(
+                          icon: FaIcon(
+                            FontAwesomeIcons.github,
+                            color: Colors.black,
+                          ),
+                          onPressed: () async {
+                            var url = "https://github.com/tc2n";
+                            await canLaunch(url)
+                                ? launch(url)
+                                : SnackBar(
+                                    content: Text("Cannot open the link"),
+                                  );
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 8.0),
               Align(
                 alignment: Alignment.bottomRight,
                 child: FlatButton(
