@@ -121,11 +121,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                   store.comic.getComicNumber, "up");
                             }
                           },
-                          child: CachedNetworkImage(
-                            imageUrl: "${store.comic.getComicUrl}",
-                            fit: BoxFit.contain,
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
+                          child: Hero(
+                            tag: 'imagebig',
+                            child: CachedNetworkImage(
+                              imageUrl: "${store.comic.getComicUrl}",
+                              fit: BoxFit.contain,
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                            ),
                           ),
                         ),
                       ),
