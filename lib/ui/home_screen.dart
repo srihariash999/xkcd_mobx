@@ -110,6 +110,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               }));
                             }
                           },
+                          onHorizontalDragEnd: (details) async {
+                            if (details.primaryVelocity > 0) {
+                              //swiped left
+                              await store.getNumberedComic(
+                                  store.comic.getComicNumber - 1, "down");
+                            } else if (details.primaryVelocity < 0) {
+                              //swiped right
+                              await store.getNumberedComic(
+                                  store.comic.getComicNumber, "up");
+                            }
+                          },
                           child: CachedNetworkImage(
                             imageUrl: "${store.comic.getComicUrl}",
                             fit: BoxFit.contain,

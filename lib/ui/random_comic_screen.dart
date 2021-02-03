@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:xkcd_mobx/constants.dart';
 import 'package:xkcd_mobx/mobx/xkcd.dart';
-import 'package:xkcd_mobx/ui/image_big.dart';
 
 class RandomComicScreen extends StatefulWidget {
   RandomComicScreen({Key key}) : super(key: key);
@@ -177,78 +176,67 @@ class _RandomComicScreenState extends State<RandomComicScreen> {
                     //   ],
                     // ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 18.0),
-                      child: Text(
-                        "${store.comic.getComicTitle}",
-                        style: headingText,
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 18),
-                      height: MediaQuery.of(context).size.height * 0.38,
-                      child: Card(
-                        child: GestureDetector(
-                          onTap: () {
-                            if (store.comic.getComicUrl != null) {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (_) {
-                                return ImageBig(
-                                    tag: 'imagebig',
-                                    url: "${store.comic.getComicUrl}");
-                              }));
-                            }
-                          },
-                          child: CachedNetworkImage(
-                            imageUrl: "${store.comic.getComicUrl}",
-                            fit: BoxFit.contain,
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                      child: Text(
-                        "${store.comic.getComicAlt}",
-                        textAlign: TextAlign.justify,
-                        style: caption,
-                      ),
-                    ),
-                    Expanded(child: Container()),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        IconButton(
-                          icon: Icon(FeatherIcons.share2),
-                          color: Colors.white,
-                          onPressed: () async {
-                            await store.shareImage();
-                          },
-                        ),
-                        IconButton(
-                          icon: store.isComicFavorite
-                              ? Icon(
-                                  Icons.favorite,
-                                  color: red,
-                                )
-                              : Icon(
-                                  FeatherIcons.heart,
-                                  color: Colors.white,
-                                ),
-                          onPressed: () {
-                            store.addFavComic();
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(FeatherIcons.download),
-                          color: Colors.white,
-                          onPressed: () async {
-                            await store.downloadImage();
-                          },
-                        ),
-                      ],
-                    )
+              padding: const EdgeInsets.symmetric(vertical: 18.0),
+              child: Text(
+                "${store.comic.getComicTitle}",
+                style: headingText,
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 18),
+              height: MediaQuery.of(context).size.height * 0.38,
+              child: Card(
+                child: InteractiveViewer(
+                  maxScale: 2.5,
+                  child: CachedNetworkImage(
+                    imageUrl: "${store.comic.getComicUrl}",
+                    fit: BoxFit.contain,
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18.0),
+              child: Text(
+                "${store.comic.getComicAlt}",
+                textAlign: TextAlign.justify,
+                style: caption,
+              ),
+            ),
+            Expanded(child: Container()),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  icon: Icon(FeatherIcons.share2),
+                  color: Colors.white,
+                  onPressed: () async {
+                    await store.shareImage();
+                  },
+                ),
+                IconButton(
+                                icon: store.isComicFavorite
+                                    ? Icon(
+                                        Icons.favorite,
+                                        color: red,
+                                      )
+                                    : Icon(
+                                        FeatherIcons.heart,
+                                        color: Colors.white,
+                                      ),
+                                onPressed: () {
+                                     store.addFavComic();
+                                  },),
+                IconButton(
+                  icon: Icon(FeatherIcons.download),
+                  color: Colors.white,
+                  onPressed: () async {
+                    await store.downloadImage();
+                  },
+                ),
+              ],
+            )
                     // Container(
                     //   // color: Colors.white,
                     //   height: MediaQuery.of(context).size.height * 0.09,
