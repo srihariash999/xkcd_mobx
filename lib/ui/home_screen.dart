@@ -191,19 +191,32 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ],
                         ),
-                        RawMaterialButton(
-                          onPressed: () async {
-                            // print(" button Pressed");
-                            await store.getNumberedComic(
-                                store.comic.getComicNumber, "up");
-                          },
-                          elevation: 0.0,
-                          fillColor: white20,
-                          child: Icon(FeatherIcons.chevronRight,
-                              color: Colors.white),
-                          padding: EdgeInsets.all(5.0),
-                          shape: CircleBorder(),
-                        ),
+                        store.getIfLastOne()
+                            ? Opacity(
+                                opacity: 0,
+                                child: RawMaterialButton(
+                                  onPressed: () async {},
+                                  elevation: 0.0,
+                                  fillColor: white20,
+                                  child: Icon(FeatherIcons.chevronRight,
+                                      color: Colors.white),
+                                  padding: EdgeInsets.all(5.0),
+                                  shape: CircleBorder(),
+                                ),
+                              )
+                            : RawMaterialButton(
+                                onPressed: () async {
+                                  // print(" button Pressed");
+                                  await store.getNumberedComic(
+                                      store.comic.getComicNumber, "up");
+                                },
+                                elevation: 0.0,
+                                fillColor: white20,
+                                child: Icon(FeatherIcons.chevronRight,
+                                    color: Colors.white),
+                                padding: EdgeInsets.all(5.0),
+                                shape: CircleBorder(),
+                              ),
                       ],
                     ),
                   ],
