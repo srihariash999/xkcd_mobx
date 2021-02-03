@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:xkcd_mobx/constants.dart';
 import 'package:xkcd_mobx/mobx/xkcd.dart';
+import 'package:xkcd_mobx/ui/image_big.dart';
 import 'package:xkcd_mobx/ui/nav_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -98,8 +99,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       margin: const EdgeInsets.symmetric(vertical: 18),
                       height: MediaQuery.of(context).size.height * 0.38,
                       child: Card(
-                        child: InteractiveViewer(
-                          maxScale: 2.5,
+                        child: GestureDetector(
+                          onTap: () {
+                            if (store.comic.getComicUrl != null) {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (_) {
+                                return ImageBig(
+                                    tag: 'imagebig',
+                                    url: "${store.comic.getComicUrl}");
+                              }));
+                            }
+                          },
                           child: CachedNetworkImage(
                             imageUrl: "${store.comic.getComicUrl}",
                             fit: BoxFit.contain,
@@ -123,10 +133,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         RawMaterialButton(
                           onPressed: () async {
-                                  // print(" button Pressed");
-                                  await store.getNumberedComic(
-                                      store.comic.getComicNumber - 1, "down");
-                                },
+                            // print(" button Pressed");
+                            await store.getNumberedComic(
+                                store.comic.getComicNumber - 1, "down");
+                          },
                           elevation: 0.0,
                           fillColor: white20,
                           child: Icon(FeatherIcons.chevronLeft,
@@ -138,38 +148,41 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             IconButton(
-                                icon: Icon(FeatherIcons.share2),
-                                color: Colors.white,
-                                onPressed: () async {
-                                     await store.shareImage();
-                                  },),
+                              icon: Icon(FeatherIcons.share2),
+                              color: Colors.white,
+                              onPressed: () async {
+                                await store.shareImage();
+                              },
+                            ),
                             IconButton(
-                                icon: store.isComicFavorite
-                                    ? Icon(
-                                        Icons.favorite,
-                                        color: red,
-                                      )
-                                    : Icon(
-                                        FeatherIcons.heart,
-                                        color: Colors.white,
-                                      ),
-                                onPressed: () async {
-                                    await store.addFavComic();
-                                  },),
+                              icon: store.isComicFavorite
+                                  ? Icon(
+                                      Icons.favorite,
+                                      color: red,
+                                    )
+                                  : Icon(
+                                      FeatherIcons.heart,
+                                      color: Colors.white,
+                                    ),
+                              onPressed: () async {
+                                await store.addFavComic();
+                              },
+                            ),
                             IconButton(
-                                icon: Icon(FeatherIcons.download),
-                                color: Colors.white,
-                                onPressed: () async {
-                                    await store.downloadImage();
-                                  },),
+                              icon: Icon(FeatherIcons.download),
+                              color: Colors.white,
+                              onPressed: () async {
+                                await store.downloadImage();
+                              },
+                            ),
                           ],
                         ),
                         RawMaterialButton(
                           onPressed: () async {
-                                    // print(" button Pressed");
-                                    await store.getNumberedComic(
-                                        store.comic.getComicNumber, "up");
-                                  },
+                            // print(" button Pressed");
+                            await store.getNumberedComic(
+                                store.comic.getComicNumber, "up");
+                          },
                           elevation: 0.0,
                           fillColor: white20,
                           child: Icon(FeatherIcons.chevronRight,

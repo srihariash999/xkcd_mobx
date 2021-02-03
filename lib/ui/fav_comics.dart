@@ -49,88 +49,103 @@ class _FavoriteComicsScreenState extends State<FavoriteComicsScreen> {
             child: Column(
               children: [
                 Expanded(
-                    child: store.isMainComicLoading
-                        ? Container()
-                        : GridView.builder(
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2),
-                            itemBuilder: (_, index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: InkWell(
-                                  onTap: () async {
-                                    var n = await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => DetailedView(
-                                          comic: store.favoriteComics[index],
+                  child: store.isMainComicLoading
+                      ? Container()
+                      : store.favoriteComics.length > 0
+                          ? GridView.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2),
+                              itemBuilder: (_, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                    onTap: () async {
+                                      var n = await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => DetailedView(
+                                            comic: store.favoriteComics[index],
+                                          ),
+                                        ),
+                                      );
+                                      if (n != null && n == true) {
+                                        await store.getFavoriteComics();
+                                      }
+                                    },
+                                    child: Container(
+                                      height: 120.0,
+                                      width: 120.0,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        color: Colors.white,
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: CachedNetworkImageProvider(
+                                              store.favoriteComics[index]
+                                                  .comicUrl),
                                         ),
                                       ),
-                                    );
-                                    if (n != null && n == true) {
-                                      await store.getFavoriteComics();
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 120.0,
-                                    width: 120.0,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      color: Colors.white,
-                                      image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: CachedNetworkImageProvider(store
-                                            .favoriteComics[index].comicUrl),
-                                      ),
-                                    ),
-                                    clipBehavior: Clip.antiAlias,
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      child: BackdropFilter(
-                                        filter: ui.ImageFilter.blur(
-                                            sigmaX: 2.0, sigmaY: 2.0),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                              color: Colors.black,
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0)),
-                                          padding: const EdgeInsets.all(12.0),
-                                          child: RichText(
-                                            text: TextSpan(
-                                                text: '#',
-                                                style: headingId.copyWith(
-                                                    fontSize: 20),
-                                                children: <TextSpan>[
-                                                  TextSpan(
-                                                      text:
-                                                          "${store.favoriteComics[index].comicNumber}",
-                                                      style: headingId)
-                                                ]),
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        child: BackdropFilter(
+                                          filter: ui.ImageFilter.blur(
+                                              sigmaX: 2.0, sigmaY: 2.0),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10.0)),
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: RichText(
+                                              text: TextSpan(
+                                                  text: '#',
+                                                  style: headingId.copyWith(
+                                                      fontSize: 20),
+                                                  children: <TextSpan>[
+                                                    TextSpan(
+                                                        text:
+                                                            "${store.favoriteComics[index].comicNumber}",
+                                                        style: headingId)
+                                                  ]),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                            itemCount: store.favoriteComics.length,
-                          )
-                    //  Column(
-                    //     children: store.favoriteComics.map((favComic) {
-                    //       return Padding(
-                    //         padding: const EdgeInsets.all(8.0),
-                    //         child: Card(
-                    //           child: Padding(
-                    //             padding: const EdgeInsets.all(12.0),
-                    //             child: Text("${favComic.comicNumber}"),
-                    //           ),
-                    //         ),
-                    //       );
-                    //     }).toList(),
-                    //   ),
-                    ),
+                                );
+                              },
+                              itemCount: store.favoriteComics.length,
+                            )
+                          : Container(
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.symmetric(horizontal: 40.0),
+                              child: Text(
+                                " No favorite comics, mark some comics as favorite to see them here ",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.white),
+                              ),
+                            ),
+                  //  Column(
+                  //     children: store.favoriteComics.map((favComic) {
+                  //       return Padding(
+                  //         padding: const EdgeInsets.all(8.0),
+                  //         child: Card(
+                  //           child: Padding(
+                  //             padding: const EdgeInsets.all(12.0),
+                  //             child: Text("${favComic.comicNumber}"),
+                  //           ),
+                  //         ),
+                  //       );
+                  //     }).toList(),
+                  //   ),
+                ),
               ],
             ),
           );

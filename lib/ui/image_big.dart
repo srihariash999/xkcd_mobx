@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:xkcd_mobx/constants.dart';
+
 class ImageBig extends StatefulWidget {
   final String tag;
   final String url;
@@ -14,16 +15,15 @@ class ImageBig extends StatefulWidget {
 }
 
 class _ImageBigState extends State<ImageBig> {
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: Scaffold (
+      child: Scaffold(
         backgroundColor: bg,
-        body: Center(
-          child: Hero(
-            tag: widget.tag,
-            child: Image.network(widget.url)
+        body: InteractiveViewer(
+          maxScale: 2.5,
+          child: Center(
+            child: Hero(tag: widget.tag, child: Image.network(widget.url)),
           ),
         ),
       ),

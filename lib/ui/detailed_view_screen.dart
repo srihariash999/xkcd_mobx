@@ -113,24 +113,21 @@ class _DetailedViewState extends State<DetailedView> {
               margin: const EdgeInsets.symmetric(vertical: 18),
               height: MediaQuery.of(context).size.height * 0.38,
               child: Card(
-                child: InteractiveViewer(
-                  maxScale: 2.5,
-                  child: GestureDetector(
-                    onTap: () {
-                        if (widget.comic.comicUrl != null) {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (_) {
-                            return ImageBig(tag: 'imagebig', url: "${widget.comic.comicUrl}");
-                          }));
-                        }
-                      },
-                                      child: Hero(
-                      tag: 'imagebig',
-                                        child: CachedNetworkImage(
-                        imageUrl: "${widget.comic.comicUrl}",
-                        fit: BoxFit.contain,
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                      ),
+                child: GestureDetector(
+                  onTap: () {
+                      if (widget.comic.comicUrl != null) {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (_) {
+                          return ImageBig(tag: 'imagebig', url: "${widget.comic.comicUrl}");
+                        }));
+                      }
+                    },
+                                    child: Hero(
+                    tag: 'imagebig',
+                                      child: CachedNetworkImage(
+                      imageUrl: "${widget.comic.comicUrl}",
+                      fit: BoxFit.contain,
+                      errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                   ),
                 ),
